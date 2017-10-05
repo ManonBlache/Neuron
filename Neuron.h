@@ -17,6 +17,7 @@ class Neuron
 		double membrane_resistance_;
 		double threshold_;
 		double life_time_;
+		double ref;
 		
 
 	
@@ -40,7 +41,7 @@ class Neuron
     void setLifeTime(double time);
 	
 	//Method that updates the neuron state from time t+T, where T=n*h
-	void Update(double const& h, double const& Iext, double const& tstop);
+	void Update(double const& h, double const& Iext);
 	
 	
 };

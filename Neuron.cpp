@@ -3,7 +3,7 @@
 
 //Constructeur et constructeur de copie
 	Neuron::Neuron()
-	:membrane_pot_(-70), tau_(10), tau_ref_(2), life_time_(0)
+	:membrane_pot_(10), tau_(20), tau_ref_(2), threshold_(20), life_time_(0)
 	{}
 
 	Neuron::Neuron(double const& mem_pot, unsigned int const& spikes) 
@@ -28,21 +28,25 @@
     void Neuron::setLifeTime(double time) {life_time_=life_time_+time;}
 
 //Method that updates the neuron state from time t+T, where T=n*h
-	void Neuron::Update (double const& h, double const& Iext, double const& tstop)
+	void Neuron::Update (double const& h, double const& Iext)
 	{
-		if (life_time_<tstop){
-		setMembranePot( getMembranePot()+ (exp(-h/getTau())*getMembranePot()) + (Iext*(getMembraneRes()/getTau())*(1-exp(-h/getTau()))) );
+		if (ref>0){
+			//setMembranePot(10);
+			ref -=1;
+			setLifeTime(h);
+		} else {
 		
+		membrane_pot_=( membrane_pot_+ (exp(-h/getTau())*membrane_pot_) + (Iext*(membrane_resistance_/getTau())*(1-exp(-h/getTau()))) );
+		//setMembranePot( getMembranePot()+ (exp(-h/getTau())*getMembranePot()) + (Iext*(getMembraneRes()/getTau())*(1-exp(-h/getTau()))) );
 		setLifeTime(h);
 		
 		if (getMembranePot()>getThreshold()) {
+			ref = tau_/h;
 			setSpikes(1);
-			
 			spikes_times_.push_back(life_time_);
-			setMembranePot(-70);
-			setLifeTime(tau_ref_); ///Pendant 2ms apres le spike, pas d'interaction et pas de potentiel
+			setMembranePot(10);
 			
 			}
 		
-		}
+	}
 	}
