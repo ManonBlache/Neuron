@@ -14,23 +14,21 @@
 double insertCurrent ();  
 double insertTimeBirth (); 
 double insertTimeStep ();
-double insertTimeDeath ();
+double insertTimeDeath (double tstart);
 bool makeAWish();  
 
 int main () {
 	
-	///These 3 values are used by default if the user doesnt want to change it
+	///Value used by default if the user doesnt want to change it
 	double t_stop (1000);
-	double h (0.1);
-	double I (200);
 	
 	Neuron FirstNeuron;
 	
 	if (makeAWish()) { ///The user decide to change or not the values
-		I = insertCurrent();
-		h = insertTimeStep ();
-		t_stop = insertTimeDeath();
+		FirstNeuron.setIext(insertCurrent());
+		FirstNeuron.setH(insertTimeStep ());
 		FirstNeuron.setLifeTime(insertTimeBirth());
+		t_stop = insertTimeDeath(insertTimeBirth());
 	} 
 		
 	
@@ -45,11 +43,11 @@ int main () {
 			 } 
 		else {
 				while (FirstNeuron.getLifeTime()<t_stop) {
-					FirstNeuron.Update(h,I);
+					if (FirstNeuron.Update()){
 						//ECRITURE FICHIER ICI
-						sortie << "At time = " << FirstNeuron.getLifeTime() << ", membrane potential = " 
-						     << FirstNeuron.getMembranePot() << endl;
+						sortie << "Spike number " << FirstNeuron.getSpikes() << " at time = " << FirstNeuron.getLifeTime() << " (Potential value = " << FirstNeuron.getMembranePot() << ")"<< endl;
 						     
+				}
 				}
 				sortie << "--> Number of Spikes: " << FirstNeuron.getSpikes() << endl;
 				}
@@ -65,32 +63,48 @@ double insertCurrent () {
 	/**This function allows the user to choose a specific value for the external current Iext
 	 * **/
 	double current;
-	cout << "Specify an external current Iext: " << endl;
+	cout << "Specify an external current Iext [0;400] : ";
 	cin >> current;
+	if((current<0)or (current>400)) {
+		cerr << "Wrong value, try again : ";
+		cin >> current;
+	}
 	return current;
 }
 double insertTimeBirth () {
 	/**This function allows the user to choose a specific value for the start time
 	 * **/
 	double start;
-	cout << "Specify a start time: " << endl;
+	cout << "Specify a start time: ";
 	cin >> start;
+	if(start<0) {
+		cerr << "Wrong value, time must be positive or zero : ";
+		cin >> start;
+	}
 	return start;
 }
 double insertTimeStep () {
 	/**This function allows the user to choose a specific value for the time interval h
 	 * **/
 	double step;
-	cout << "Specify a time interval: " << endl;
+	cout << "Specify a time interval: ";
 	cin >> step;
+	if(step<=0) {
+		cerr << "Wrong value, step must be positive : ";
+		cin >> step;
+	}
 	return step;
 }
-double insertTimeDeath () {
+double insertTimeDeath (double tstart) {
 	/**This function allows the user to choose a specific value for the stop time
 	 * **/
 	double stop;
-	cout << "Specify a stop time: " << endl;
+	cout << "Specify a stop time: ";
 	cin >> stop;
+	if((stop<0) or (stop<=tstart)) {
+		cerr << "Wrong value, tstop > tstart : ";
+		cin >> stop;
+		}
 	return stop;
 }
 
