@@ -12,8 +12,9 @@
 	 life_time_(0),
 	 h_(0.1),
 	 ref_(0),
-	 Iext_(200)
-	{}
+	 Iext_(200),
+	 J_(0.2)
+	 {}
 
 	Neuron::Neuron(double const& birth) 
 	:membrane_pot_(10),
@@ -25,7 +26,8 @@
 	 life_time_(birth),
 	 h_(0.1),
 	 ref_(0),
-	 Iext_(200)
+	 Iext_(200),
+	 J_(0.2)
 	{} 
 	
 	Neuron::Neuron(Neuron const &autre)
@@ -40,6 +42,7 @@
 	double Neuron::getMembranePot () const { return membrane_pot_; }
     unsigned int Neuron::getSpikes () const { return num_spikes_; }
     double Neuron::getLifeTime() const {return life_time_;}
+    double Neuron::getH() const {return h_;}
     ///double Neuron::getTau() const {return tau_;}
     ///void Neuron::setMembranePot (double const& r) {membrane_pot_=r;}
     ///void Neuron::setSpikes (unsigned int const& i) { num_spikes_= num_spikes_+i; }
@@ -69,4 +72,13 @@ bool Neuron::Update ()
 		spike=true;
 		}
 	return spike;
+}
+
+void Neuron::Interact(Neuron &autre) {
+	
+	if (Update()) {
+		autre.membrane_pot_+= J_;
+		
+		}
+	
 }

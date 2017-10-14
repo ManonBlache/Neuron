@@ -23,6 +23,8 @@ class Neuron
 		double ref_;/// number of steps required to quit refractory time = tau_ref_/h
 		double Iext_; ///External current
 		
+		double J_; ///wight
+		
 
 	
 	public:
@@ -39,15 +41,19 @@ class Neuron
 	double getMembranePot() const;
     unsigned int getSpikes() const;
     double getLifeTime() const;
+    double getH() const;
     ///double getTau() const;
     ///void setMembranePot (double const& r);
-   /// void setSpikes (unsigned int const& i);
+    ///void setSpikes (unsigned int const& i);
     void setLifeTime(double time);
     void setH(double h);
     void setIext(double I);
 	
 	//Method that updates the neuron state from time t+T, where T=n*h
 	bool Update(); ///true if spike during update
+	
+	//Method interaction between two neurons
+	void Interact(Neuron &autre);
 	
 	
 };
