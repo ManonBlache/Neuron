@@ -12,19 +12,20 @@ class Neuron
 	
 		double membrane_pot_;
 		unsigned int num_spikes_;
-		double spike_time_; ///keep the time of the last spike
+		bool spike_;
 		
 		double tau_; ///Tau used in the membrane potential implementation formula = 20 ms
 		double tau_ref_; ///refractory time of neuron = 2 ms
 		double  membrane_resistance_; /// = 20
 		double threshold_;  /// = 20
-		double life_time_;
+		int life_time_; ///number of steps since birth
 		double h_; ///time of a single step = 0.1 ms		
 		double ref_;/// number of steps required to quit refractory time = tau_ref_/h
 		double Iext_; ///External current
 		
-		double J_; ///wight
-		
+		double J_; ///weight
+		int D_; ///Delay
+		vector <double> buffer_ ;
 
 	
 	public:
@@ -42,10 +43,12 @@ class Neuron
     unsigned int getSpikes() const;
     double getLifeTime() const;
     double getH() const;
+    int getD() const;
+    int getJ() const;
     ///double getTau() const;
     ///void setMembranePot (double const& r);
     ///void setSpikes (unsigned int const& i);
-    void setLifeTime(double time);
+    void setLifeTime(int time);
     void setH(double h);
     void setIext(double I);
 	
@@ -55,6 +58,10 @@ class Neuron
 	//Method interaction between two neurons
 	void Interact(Neuron &autre);
 	
+	 //Methods to implement and use the ring buffer
+	void ImplementBuffer(double j, int d);
+	double getBuffer(size_t position);
+	void clearBuffer(size_t position);
 	
 };
 

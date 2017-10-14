@@ -13,7 +13,9 @@
 	 h_(0.1),
 	 ref_(0),
 	 Iext_(200),
-	 J_(0.2)
+	 J_(0.2), 
+	 D_(3),
+	 buffer_(D_/h_, 0)
 	 {}
 
 	Neuron::Neuron(double const& birth) 
@@ -27,7 +29,8 @@
 	 h_(0.1),
 	 ref_(0),
 	 Iext_(200),
-	 J_(0.2)
+	 J_(0.2),
+	 buffer_(D_/h_, 0)
 	{} 
 	
 	Neuron::Neuron(Neuron const &autre)
@@ -41,44 +44,61 @@
 	///double Neuron::getMembraneRes () const { return membrane_resistance_; }
 	double Neuron::getMembranePot () const { return membrane_pot_; }
     unsigned int Neuron::getSpikes () const { return num_spikes_; }
-    double Neuron::getLifeTime() const {return life_time_;}
+    double Neuron::getLifeTime() const {return life_time_*0.1;}
     double Neuron::getH() const {return h_;}
+    int Neuron::getD() const {return D_;}
+     int Neuron::getJ() const {return J_;}
     ///double Neuron::getTau() const {return tau_;}
     ///void Neuron::setMembranePot (double const& r) {membrane_pot_=r;}
     ///void Neuron::setSpikes (unsigned int const& i) { num_spikes_= num_spikes_+i; }
-    void Neuron::setLifeTime(double time) {life_time_=life_time_+time;}
+    void Neuron::setLifeTime(int time) {life_time_=life_time_+time;}
     void Neuron::setH(double h) {h_=h;}
     void Neuron::setIext(double I) {Iext_=I;}
 
 //Method that updates the neuron state from time t+T, where T=n*h
 bool Neuron::Update ()
 {
-	bool spike =false;
-	life_time_+=h_;
-	
+	spike_ =false;
+
 	if (ref_>0){
 		membrane_pot_=0;
 		ref_ -=1;
 	} else {
 		
-	membrane_pot_= membrane_pot_+ ((exp(-h_/tau_)*membrane_pot_) + ( Iext_*membrane_resistance_*(1-exp(-h_/tau_)) ) );
-		
+	membrane_pot_+= getBuffer((life_time_+1)%buffer_.size()) + ((exp(-h_/tau_)*membrane_pot_) + ( Iext_*membrane_resistance_*(1-exp(-h_/tau_)) ) );
+		clearBuffer((life_time_+1)%buffer_.size());
 	}
 	
 	if (membrane_pot_>=threshold_) {
 		ref_= tau_ref_/h_;
 		num_spikes_+=1;
-		spike_time_=life_time_;
-		spike=true;
+		spike_=true;
 		}
-	return spike;
+		
+		life_time_+=1;
+	return spike_;
 }
 
-void Neuron::Interact(Neuron &autre) {
+/*void Neuron::Interact(Neuron &autre) {
 	
-	if (Update()) {
-		autre.membrane_pot_+= J_;
-		
+	"this" is the neuron who send his spike potential to an other neuron
+	connected to him 
+	
+	if (spike_) {
+		autre.ImplementBuffer(J_,(life_time_+D_)%autre.buffer_.size());
 		}
 	
+	
+}*/
+
+void Neuron::ImplementBuffer(double j, int d) {
+	buffer_[(life_time_+d)%buffer_.size()]+=j;
+	}
+
+double Neuron::getBuffer(size_t position) {
+	return buffer_[position];
 }
+
+void Neuron::clearBuffer(size_t position){
+	buffer_[position]=0;
+	}
