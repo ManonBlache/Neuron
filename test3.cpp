@@ -1,6 +1,6 @@
 #include <fstream>
 #include <vector>
-#include "Neuron.cpp"
+#include "Neuron.h"
 
 double insertCurrent ();  
 double insertTimeBirth (); 
@@ -13,7 +13,7 @@ int main () {
 	int clock_=0;
 	
 	///Value used by default if the user doesnt want to change it
-	int t_stop (1000);
+	int t_stop (100);
 
 
 	
@@ -27,50 +27,50 @@ int main () {
 		double start(insertTimeBirth());
 		
 		FirstNeuron.setIext(I);
-		SecondNeuron.setIext(I);
+		SecondNeuron.setIext(0);
 		FirstNeuron.setH(Step);
 		SecondNeuron.setH(Step);
-		FirstNeuron.setLifeTime(start/0.1);
-		SecondNeuron.setLifeTime(start/0.1);
+		FirstNeuron.setLifeTime(start/Step);
+		SecondNeuron.setLifeTime(start/Step);
 		
 		t_stop = insertTimeDeath(FirstNeuron.getLifeTime());
 	} 
 		
 	
 	//OUVERTURE FICHIER ICI
-	string nom_fichier ("data.txt");
+	string nom_fichier ("data_01.txt");
 	ofstream sortie (nom_fichier.c_str());
 	
+	string nom_fichier_02 ("data_02.txt");
+	ofstream sortie_02 (nom_fichier_02.c_str());
 	
-	if (sortie.fail()) {
+	
+	if (sortie.fail() or sortie_02.fail()) {
 		cerr << "Erreur d'ouverture du fichier,"
 			 << "impossible d'écrire dans le fichier " << nom_fichier << endl;
 			 } 
 		else {
 				while (clock_*0.1<t_stop) {
-
 					
-					if (FirstNeuron.Update()){
+ 					if (FirstNeuron.Update(1.01)){
 						SecondNeuron.ImplementBuffer(FirstNeuron.getJ(),FirstNeuron.getD());
+						
 						//ECRITURE FICHIER ICI
 						sortie << "Spike neuron 1 number " << FirstNeuron.getSpikes() 
-							   << " at time = " << FirstNeuron.getLifeTime() 
-							   << " (Potential value = " << FirstNeuron.getMembranePot() << ")"<< endl;
-						   
+							   << " at time = " << FirstNeuron.getLifeTime()
+							   << " (Potential value = " << FirstNeuron.getMembranePot() << ")"<< endl;   
 					}
-					if (SecondNeuron.Update()){
-						FirstNeuron.ImplementBuffer(SecondNeuron.getJ(),SecondNeuron.getD());
+					if (SecondNeuron.Update(0)){
 						//ECRITURE FICHIER ICI
-						sortie << "Spike neuron 2 number " << SecondNeuron.getSpikes() 
+						sortie_02 << "Spike neuron 2 number " << SecondNeuron.getSpikes() 
 							   << " at time = " << SecondNeuron.getLifeTime() 
-							   << " (Potential value = " << FirstNeuron.getMembranePot() << ")"<< endl;
-						   
+							   << " (Potential value = " << FirstNeuron.getMembranePot() << ")"<< endl;   
 					}
 					
 					
 					clock_+=1;
 				}
-				//sortie << "--> Number of Spikes: " << FirstNeuron.getSpikes() << endl;
+
 		}
 	
 	//FERMETURE FICHIER ICI
@@ -130,7 +130,8 @@ double insertTimeDeath (double tstart) {
 }
 
 bool makeAWish() {
-	/** In this function, the user choose to change the values for Iext and h or not
+	/** In this function, the user choose to change the values for Iext, h, tstart and tstop
+	 * @return : true if the user want to change values, false if not.
 	 * **/
 	char choix ('O');
 	cout << "Voulez-vous choisir des valeurs pour Iext, t_start, t_stop et h?  (O/N) ";

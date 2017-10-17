@@ -25,6 +25,8 @@ class Neuron
 		
 		double J_; ///weight
 		int D_; ///Delay
+		
+	public:
 		vector <double> buffer_ ;
 
 	
@@ -37,27 +39,19 @@ class Neuron
 	~Neuron ();
 	
 	//Getters et setters
-	///double getThreshold() const;
-	///double getMembraneRes() const ;
 	double getMembranePot() const;
     unsigned int getSpikes() const;
     double getLifeTime() const;
     double getH() const;
-    int getD() const;
-    int getJ() const;
-    ///double getTau() const;
-    ///void setMembranePot (double const& r);
-    ///void setSpikes (unsigned int const& i);
+    double getD() const;
+    double getJ() const;
     void setLifeTime(int time);
     void setH(double h);
     void setIext(double I);
 	
 	//Method that updates the neuron state from time t+T, where T=n*h
-	bool Update(); ///true if spike during update
-	
-	//Method interaction between two neurons
-	void Interact(Neuron &autre);
-	
+	bool Update(double const& Iext); ///true if spike during update
+
 	 //Methods to implement and use the ring buffer
 	void ImplementBuffer(double j, int d);
 	double getBuffer(size_t position);
