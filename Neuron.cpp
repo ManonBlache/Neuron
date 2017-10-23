@@ -58,6 +58,9 @@ bool Neuron::Update (double const& Iext)
 	
 	if (ref_>0){
 		membrane_pot_=0;
+		//neuron is refractory so it doesn't interact, 
+		//we have to clear the buffer or the next time it will receive twice the J valuew
+		clearBuffer((life_time_+1)%buffer_.size()); 
 		ref_ -=1;
 	} else {
 
@@ -67,6 +70,7 @@ bool Neuron::Update (double const& Iext)
 	
 	if (membrane_pot_>=threshold_) {
 		ref_= tau_ref_/h_;
+		membrane_pot_=0;
 		num_spikes_+=1;
 		spike_=true;
 		}

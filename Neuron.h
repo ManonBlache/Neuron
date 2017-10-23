@@ -52,7 +52,7 @@ class Neuron
 	//Method that updates the neuron state from time t+T, where T=n*h
 	bool Update(double const& Iext); ///true if spike during update
 
-	 //Methods to implement and use the ring buffer
+	//Methods to implement and use the ring buffer
 	void ImplementBuffer(double j, int d);
 	double getBuffer(size_t position);
 	void clearBuffer(size_t position);

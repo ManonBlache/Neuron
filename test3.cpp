@@ -13,7 +13,7 @@ int main () {
 	int clock_=0;
 	
 	///Value used by default if the user doesnt want to change it
-	int t_stop (100);
+	int t_stop (1000);
 
 
 	
