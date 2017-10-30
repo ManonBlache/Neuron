@@ -58,8 +58,8 @@ bool Neuron::Update (double const& Iext)
 	
 	if (ref_>0){
 		membrane_pot_=0;
-		//neuron is refractory so it doesn't interact, 
-		//we have to clear the buffer or the next time it will receive twice the J valuew
+		///neuron is refractory so it doesn't interact, 
+		///we have to clear the buffer or the next time it will receive twice the J value
 		clearBuffer((life_time_+1)%buffer_.size()); 
 		ref_ -=1;
 	} else {

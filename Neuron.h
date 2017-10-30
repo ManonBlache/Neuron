@@ -54,8 +54,25 @@ class Neuron
 
 	//Methods to implement and use the ring buffer
 	void ImplementBuffer(double j, int d);
+	/*!
+     * @brief : Function to implement the buffer when a spike from 
+     * 			a connected neuron occurs
+     * @param : Takes as paramaters the amplitude J and delay D
+     */
+     
 	double getBuffer(size_t position);
+	/*!
+     * @brief : Function to get the value in the buffer, at time 'position'
+     * @param : Takes as parameter the tab position to be returned
+     * @return : Returns the value in tab[position]
+     */
+     
 	void clearBuffer(size_t position);
+	/*!
+     * @brief : Function to clear the buffer at a certain time ,
+     * 			when the value in this case is used.
+     * @param : Takes as paramater the tab position to be cleared. 
+     */
 	
 };
 
